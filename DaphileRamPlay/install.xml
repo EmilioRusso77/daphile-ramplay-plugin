@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extension version="1.0" target="plugin" minTarget="8.0">
+    <details>
+        <title lang="EN">Daphile RAM Play Auto</title>
+        <title lang="IT">Daphile RAM Play Automatico</title>
+        <desc lang="EN">Automatically enables "Play from RAM" on Daphile at the start of every track. Works with all clients including iPeng and any LMS-compatible app. No more manual clicks!</desc>
+        <desc lang="IT">Attiva automaticamente "Play from RAM" su Daphile all'inizio di ogni brano. Funziona con tutti i client incluso iPeng. Niente più click manuali!</desc>
+        <author>Emilio Russo</author>
+        <version>1.0</version>
+        <link>https://github.com/EmilioRusso77/daphile-ramplay-plugin</link>
+    </details>
+    <actions>
+        <action name="install" url="https://github.com/EmilioRusso77/daphile-ramplay-plugin/archive/refs/heads/main.zip" md5=""/>
+    </actions>
+</extension>
