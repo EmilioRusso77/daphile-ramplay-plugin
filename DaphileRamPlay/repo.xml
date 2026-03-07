@@ -2,12 +2,12 @@
 <extensions>
     <details><title lang="EN">Emilio Russo's Daphile Plugins</title></details>
     <plugins>
-        <plugin name="DaphileRamPlay" version="1.5" minTarget="8.0" maxTarget="*">
+        <plugin name="DaphileRamPlay" version="1.6" minTarget="8.0" maxTarget="*">
             <title lang="EN">Daphile RAM Play Auto</title>
-            <url>https://github.com/EmilioRusso77/daphile-ramplay-plugin/releases/download/v1.5/DaphileRamPlay-v1.5.zip</url>
+            <url>https://github.com/EmilioRusso77/daphile-ramplay-plugin/releases/download/v1.6/DaphileRamPlay-v1.6.zip</url>
             <creator>Emilio Russo</creator>
             <link>https://github.com/EmilioRusso77/daphile-ramplay-plugin</link>
-            <sha>ced6ce2eca9e54a1d685a289cfbb7beb205a8f91</sha>
+            <sha>e0a7fe70c9dbf8f20b73742df13480a2b2632ef0</sha>
         </plugin>
     </plugins>
 </extensions>
