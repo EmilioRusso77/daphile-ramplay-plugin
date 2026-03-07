@@ -2,15 +2,16 @@ package Plugins::DaphileRamPlay::Plugin;
 
 # DaphileRamPlay - Automatic RAM Play for Daphile
 # Author: Emilio Russo
-# Version: 1.0
-# 
+# Version: 1.4
+#
 # Automatically activates "Play from RAM" on Daphile for all clients
 # including iPeng and any other LMS-compatible controller.
 #
 # Reverse engineered endpoint:
 #   GET /cgi-bin/ramplay.json?cmd=start&player=<mac>
 #   GET /cgi-bin/ramplay.json?cmd=status&player=<mac>
-#   Response: {"status":"start"} = NOT active | {"status":"stop"} = ACTIVE
+#   Response: {"status":"stop"}  = NOT active (activate it)
+#             {"status":"start"} = ACTIVE (nothing to do)
 
 use strict;
 use warnings;
@@ -35,33 +36,56 @@ sub initPlugin {
 
     $prefs->init({
         enabled => 1,   # Plugin attivo di default
-        delay   => 3,   # Secondi di attesa prima di attivare (la copia in RAM ha bisogno di tempo)
+        delay   => 0,   # Nessun ritardo: attiviamo RAM play il prima possibile
     });
 
-    # Sottoscrivi all'evento "nuova canzone"
+    # Evento precoce: intercetta apertura file, prima che la riproduzione parta
+    Slim::Control::Request::subscribe(
+        \&onPlaylistOpen,
+        [['playlist'], ['open']]
+    );
+
+    # Evento di backup: cambio traccia gia' in riproduzione
     Slim::Control::Request::subscribe(
         \&onNewSong,
         [['playlist'], ['newsong']]
     );
 
-    $log->info("DaphileRamPlay plugin initialized");
+    $log->info("DaphileRamPlay plugin initialized (v1.4 - early trigger)");
 
     $class->SUPER::initPlugin(@_);
 }
 
+# Evento precoce - scatta quando LMS apre il file, prima della riproduzione
+sub onPlaylistOpen {
+    my $request = shift;
+    my $client  = $request->client() || return;
+
+    return unless $prefs->get('enabled');
+
+    $log->info("Playlist open detected, activating RAM play immediately");
+
+    # Cancella eventuali timer pending da newsong per evitare doppia chiamata
+    Slim::Utils::Timers::killTimers($client, \&activateRamPlay);
+
+    # Attiva subito, senza delay
+    activateRamPlay($client);
+}
+
+# Evento di backup - scatta quando la nuova canzone e' gia' partita
 sub onNewSong {
     my $request = shift;
     my $client  = $request->client() || return;
 
-    # Controlla se il plugin è abilitato nelle preferenze
     return unless $prefs->get('enabled');
 
-    my $delay = $prefs->get('delay') || 3;
+    my $delay = $prefs->get('delay') || 0;
 
     $log->info("New song detected, scheduling RAM play activation in ${delay}s");
 
-    # Aspetta qualche secondo che Daphile inizi la riproduzione
-    # prima di attivare il RAM play
+    # Se playlist open ha gia' eseguito, killTimers evita doppioni
+    Slim::Utils::Timers::killTimers($client, \&activateRamPlay);
+
     Slim::Utils::Timers::setTimer(
         $client,
         time() + $delay,
@@ -73,7 +97,6 @@ sub activateRamPlay {
     my $client = shift;
     return unless $client;
 
-    # Usa 127.0.0.1 perché il plugin gira sullo stesso host di Daphile
     my $mac         = $client->macaddress();
     my $mac_encoded = $mac;
     $mac_encoded    =~ s/:/\%3A/g;
