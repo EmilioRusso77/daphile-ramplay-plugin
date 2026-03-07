@@ -50,7 +50,17 @@ sub initPlugin {
         \&onNewSong,
         [['playlist'], ['newsong']]
     );
-
+	
+	# DEBUG - cattura tutti gli eventi playlist
+    Slim::Control::Request::subscribe(
+        sub {
+            my $request = shift;
+            my $client  = $request->client() || return;
+            $log->info("EVENT: " . $request->getRequestString());
+        },
+        [['playlist']]
+    );
+	
     $log->info("DaphileRamPlay plugin initialized (v1.4 - early trigger)");
 
     $class->SUPER::initPlugin(@_);
