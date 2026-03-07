@@ -10,6 +10,6 @@
         <link>https://github.com/EmilioRusso77/daphile-ramplay-plugin</link>
     </details>
     <actions>
-        <action name="install" url="https://github.com/EmilioRusso77/daphile-ramplay-plugin/archive/refs/heads/main.zip" md5=""/>
+        <action name="install" url="https://github.com/EmilioRusso77/daphile-ramplay-plugin/releases/download/v1.0/DaphileRamPlay-v1.0.zip" md5=""/>
     </actions>
 </extension>
