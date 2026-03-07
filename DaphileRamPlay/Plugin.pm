@@ -89,11 +89,11 @@ sub activateRamPlay {
 
             $log->info("RAM play status response: $content");
 
-            # NOTA: la logica e' invertita nell'API di Daphile:
-            #   {"status":"start"} = RAM play NON attivo -> dobbiamo attivarlo
-            #   {"status":"stop"}  = RAM play GIA' attivo -> non fare nulla
+            # Logica API Daphile (verificata da log reale):
+            #   {"status":"stop"}  = RAM play NON attivo -> dobbiamo attivarlo
+            #   {"status":"start"} = RAM play GIA' attivo -> non fare nulla
 
-            if ( $content =~ /"status"\s*:\s*"start"/ ) {
+            if ( $content =~ /"status"\s*:\s*"stop"/ ) {
                 $log->info("RAM play not active, activating for $mac");
                 _doActivate($mac_encoded);
             } else {
