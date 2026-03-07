@@ -1,0 +1,23 @@
+PLUGIN_DAPHILERAMPLAY_NAME
+	EN	Daphile RAM Play Auto
+	IT	Daphile RAM Play Automatico
+
+PLUGIN_DAPHILERAMPLAY_DESC
+	EN	Automatically activates "Play from RAM" on Daphile at the start of every track. Works with all clients including iPeng.
+	IT	Attiva automaticamente "Play from RAM" su Daphile all'inizio di ogni brano. Funziona con tutti i client incluso iPeng.
+
+PLUGIN_DAPHILERAMPLAY_SETTINGS
+	EN	Settings
+	IT	Impostazioni
+
+PLUGIN_DAPHILERAMPLAY_ENABLED
+	EN	Enable automatic RAM play
+	IT	Abilita RAM play automatico
+
+PLUGIN_DAPHILERAMPLAY_DELAY
+	EN	Activation delay (seconds after playback starts)
+	IT	Ritardo di attivazione (secondi dopo l'avvio della riproduzione)
+
+PLUGIN_DAPHILERAMPLAY_SECONDS
+	EN	seconds
+	IT	secondi

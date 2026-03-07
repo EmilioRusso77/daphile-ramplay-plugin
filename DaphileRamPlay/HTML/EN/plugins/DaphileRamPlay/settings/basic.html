@@ -1,0 +1,45 @@
+[% PROCESS helpheader.html %]
+
+<h3>[% "PLUGIN_DAPHILERAMPLAY_NAME" | string %]</h3>
+<p>[% "PLUGIN_DAPHILERAMPLAY_DESC" | string %]</p>
+
+<form method="post" action="[% selfurl %]">
+  <input type="hidden" name="action" value="saveSettings" />
+  <input type="hidden" name="CSRFCheck" value="[% CSRFCheck %]" />
+
+  <table class="settingsTable" width="100%">
+
+    <tr>
+      <td class="sectiontitle" colspan="2">
+        [% "PLUGIN_DAPHILERAMPLAY_SETTINGS" | string %]
+      </td>
+    </tr>
+
+    <tr>
+      <td>[% "PLUGIN_DAPHILERAMPLAY_ENABLED" | string %]</td>
+      <td>
+        <input type="checkbox" name="pref_enabled" id="pref_enabled"
+          [% IF prefs.enabled %]checked[% END %] />
+      </td>
+    </tr>
+
+    <tr>
+      <td>[% "PLUGIN_DAPHILERAMPLAY_DELAY" | string %]</td>
+      <td>
+        <input type="number" name="pref_delay" id="pref_delay"
+          value="[% prefs.delay %]" min="1" max="30" style="width:60px;" />
+        &nbsp;[% "PLUGIN_DAPHILERAMPLAY_SECONDS" | string %]
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+        <input type="submit" value="[% 'SAVE' | string %]" />
+      </td>
+    </tr>
+
+  </table>
+
+</form>
+
+[% PROCESS helpfooter.html %]
