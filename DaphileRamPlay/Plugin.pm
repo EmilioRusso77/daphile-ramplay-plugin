@@ -8,7 +8,7 @@ use Slim::Player::Source;
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Utils::Timers;
-use Slim::Utils::JSON;
+use JSON::PP ();
 use Slim::Networking::SimpleAsyncHTTP;
 use URI::Escape qw(uri_escape_utf8 uri_unescape);
 
@@ -150,7 +150,7 @@ sub _poll {
     _http($client, 'status', sub {
         my $http = shift;
         return unless $pending{$client->id} && $pending{$client->id} == $job;
-        my $data = eval { Slim::Utils::JSON::from_json($http->content) };
+        my $data = eval { JSON::PP::decode_json($http->content) };
         if (ref($data) eq 'HASH' && defined($data->{status}) && $data->{status} eq 'stop') {
             delete $pending{$client->id};
             # stop means operation idle, NOT that playback is outside RAM.

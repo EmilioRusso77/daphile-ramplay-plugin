@@ -5,14 +5,13 @@ use FindBin;
 use JSON::PP ();
 BEGIN {
     package main; sub WEBUI () { 1 }
-    for my $module (qw(Slim/Plugin/Base.pm Slim/Control/Request.pm Slim/Player/Playlist.pm Slim/Player/Source.pm Slim/Utils/Log.pm Slim/Utils/Prefs.pm Slim/Utils/Timers.pm Slim/Utils/JSON.pm Slim/Networking/SimpleAsyncHTTP.pm Slim/Web/Settings.pm)) { $INC{$module}=1 }
+    for my $module (qw(Slim/Plugin/Base.pm Slim/Control/Request.pm Slim/Player/Playlist.pm Slim/Player/Source.pm Slim/Utils/Log.pm Slim/Utils/Prefs.pm Slim/Utils/Timers.pm Slim/Networking/SimpleAsyncHTTP.pm Slim/Web/Settings.pm)) { $INC{$module}=1 }
     package Slim::Plugin::Base; sub initPlugin {}
     package Slim::Web::Settings; our $registered=0; sub new { $registered++; bless {}, shift }
     package Slim::Utils::Log; sub addLogCategory { bless {}, 'TestLog' }
     package TestLog; sub error {} sub warn {} sub info {}
     package Slim::Utils::Prefs; our $prefs=bless {enabled=>1}, 'TestPrefs'; sub preferences { $prefs }
     package TestPrefs; sub init {} sub get { $_[0]->{$_[1]} } sub set { $_[0]->{$_[1]}=$_[2] }
-    package Slim::Utils::JSON; sub from_json { JSON::PP::decode_json($_[0]) }
     package Slim::Utils::Timers; our @timers;
     sub killTimers { my $c=shift; @timers=grep { $_->[0] != $c } @timers }
     sub setTimer { push @timers, [@_] }
