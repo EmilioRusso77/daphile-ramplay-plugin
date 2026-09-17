@@ -13,6 +13,6 @@ sub name { return Slim::Web::HTTP::CSRF->protectName('PLUGIN_DAPHILERAMPLAY_NAME
 
 sub page { return Slim::Web::HTTP::CSRF->protectURI('plugins/DaphileRamPlay/settings/basic.html') }
 
-sub prefs { return ($prefs, qw(enabled delay)) }
+sub prefs { return ($prefs, qw(enabled)) }
 
 1;
