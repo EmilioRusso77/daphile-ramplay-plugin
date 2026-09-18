@@ -125,6 +125,14 @@ sub _start {
         $log->error('RAM start failed or timed out; checking server state');
         _schedule($client) if $pending{$client->id} && $pending{$client->id} == $job;
     });
+    # Feedback only, after dispatching start. Never gate RAM preparation on UI.
+    eval {
+        $client->showBriefly({
+            line => ['Daphile RAM Play', 'Loading into RAM...'],
+            jive => {text => ['Daphile RAM Play', 'Loading into RAM...'], duration => 4},
+        }, {duration => 4});
+        1;
+    };
 }
 
 sub _http {

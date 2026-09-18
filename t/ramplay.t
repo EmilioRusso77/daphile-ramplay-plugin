@@ -36,6 +36,12 @@ BEGIN {
     sub get { my ($s,$url)=@_; $s->{url}=$url; push @calls,$s }
     sub content { $_[0]->{body} }
     package TestClient;
+    sub showBriefly {
+        my ($c,$message,$options)=@_;
+        die 'Display unavailable' if $c->{displayFails};
+        push @{$c->{messages}}, [$message,$options];
+        $c->{httpAtNotice}=scalar @Slim::Networking::SimpleAsyncHTTP::calls;
+    }
     sub id { $_[0]->{id} } sub macaddress { '5a:7b:b0:c0:ee:ba' }
     sub execute { my ($c,$args)=@_; my $r=TestRequest->new($c,'playlist',$args->[1],{_index=>$args->[2],_noplay=>$args->[4]}); $Slim::Control::Request::handlers{$args->[1]}->($r) }
     package TestRequest;
@@ -105,4 +111,35 @@ $Slim::Utils::Prefs::prefs->set('enabled',0);
 my $off=client(); jump($off,0); is_deeply($off->{events},['audio'],'disabled delegates');
 $Slim::Utils::Prefs::prefs->set('enabled',1);
 my $empty=client(urls=>[]); is(Plugins::DaphileRamPlay::Plugin::_targetIndex($empty,0),undef,'empty queue has no target');
+my $notice=client(); my $beforeNotice=@Slim::Networking::SimpleAsyncHTTP::calls;
+jump($notice,0);
+is(scalar @{$notice->{messages}},1,'one initial loading notice');
+is($notice->{messages}[0][0]{jive}{text}[1],'Loading into RAM...','controller receives loading text');
+is($notice->{httpAtNotice},$beforeNotice+1,'RAM request dispatched before optional UI feedback');
+jump($notice,0);
+is(scalar @{$notice->{messages}},1,'duplicate play does not repeat notice');
+finish($notice);
+is(scalar @{$notice->{messages}},1,'poll completion does not repeat notice');
+for my $cmd ('jump','play','pause') {
+    my $x=client(displayFails=>1); my $before=@Slim::Networking::SimpleAsyncHTTP::calls;
+    my $req;
+    my $ok=eval {
+        if ($cmd eq 'jump') { $req=jump($x,0) }
+        else { $req=request($x,$cmd,undef,$cmd eq 'pause' ? {_newvalue=>0} : {}); $Slim::Control::Request::handlers{$cmd}->($req) }
+        1;
+    };
+    ok($ok,"$cmd survives display exception");
+    is($req->{status},'done',"$cmd completes despite display exception");
+    is_deeply($x->{events},['stop','select'],"$cmd stays silent despite display exception");
+    is(scalar @Slim::Networking::SimpleAsyncHTTP::calls,$before+1,"$cmd starts RAM exactly once despite display exception");
+    my $http=$Slim::Networking::SimpleAsyncHTTP::calls[-1]; $http->{ok}->($http);
+    ok(grep($_->[0] == $x,@Slim::Utils::Timers::timers),"$cmd still schedules status polling");
+    is(jump($x,0)->{status},'busy','failure preserves concurrent-start guard');
+    finish($x);
+    is(jump($x,0)->{status},'done','completion releases guard after failed notice');
+}
+for my $url ('https://example.org/radio','tmp:///srv/mediaserver/music/RAM Drive/RAM play cache/a.wav') {
+    my $x=client(urls=>[$url]); jump($x,0);
+    ok(!$x->{messages},'no loading notice for native playback');
+}
 done_testing();
