@@ -1,17 +1,9 @@
-# 1.7.2 - loading feedback (test build)
+# 1.7.2 - loading feedback
 
-Adds one four-second showBriefly message: "Daphile RAM Play / Loading into RAM...".
-Uses the LMS display notification API, including the jive text block:
-https://lyrion.org/reference/slimbrowse/#showbriefly-communications
+Adds a four-second "Daphile RAM Play / Loading into RAM..." notification through LMS showBriefly, including the jive text block.
 
-The notification is sent after the existing RAM start request and exceptions are
-ignored. No new dependencies, playback commands, volume changes, progress timers,
-or changes to queue handling and polling. Existing v1.7.1 limitations still apply.
+The notification is sent after the RAM start request; display exceptions are ignored. Playback interception, queue handling, polling and volume settings are unchanged from 1.7.1. No new dependencies.
 
-iPeng display support is not yet device-tested. The stable repository manifest
-continues to offer v1.7.1; this build must not be promoted until a home test confirms
-the message appears and playback still stays silent until RAM preparation completes.
+Validation: 57 automated assertions pass with simulated LMS interfaces and the real JSON decoder, including display failures during jump, play and resume. iPeng and other controllers have not yet been device-tested; visibility depends on client support.
 
-Validation: run `perl t/ramplay.t`. Tests include display exceptions during jump,
-play and resume, successful request completion, silence, single RAM dispatch,
-continued polling and guard release, and no notices for cached/remote playback.
+After updating and restarting LMS, start an uncached local album. Check for the initial notice and silence until RAM playback starts. Existing 1.7.1 limitations still apply.
